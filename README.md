@@ -103,6 +103,7 @@ For CloudBase, do not use `tcb hosting deploy ./dist` for the full app.
 
 - Static hosting is only for frontend-only builds.
 - This repository contains a Python FastAPI backend and should be deployed as one container service with the root `Dockerfile`.
+- For lower-tier CloudBase environments, use `Dockerfile.cloudbase` to reduce image build weight.
 - See [DEPLOY_CLOUDBASE.md](./DEPLOY_CLOUDBASE.md) for the CloudBase-specific setup.
 
 ## Exposed Backend Endpoints

@@ -25,7 +25,8 @@ Use one CloudBase container service:
 
 - `/` serves the built mobile web app
 - `/api/*` serves the FastAPI backend
-- the root `Dockerfile` builds the frontend and runs the backend
+- `Dockerfile.cloudbase` builds the frontend and runs the backend with a lighter dependency set
+- the root `Dockerfile` remains available for heavier platforms that can install Demucs during image build
 
 This repository is already prepared for that shape.
 
@@ -37,7 +38,7 @@ Create a new CloudBase cloud hosting service with these choices:
 2. Choose `Container`.
 3. Choose `Deploy from repository`.
 4. Select this repo and the `main` branch.
-5. Use the root `Dockerfile`.
+5. Use `Dockerfile.cloudbase`.
 6. Set the service port to `8000`.
 7. Enable public access.
 
@@ -57,14 +58,37 @@ If your CloudBase plan supports persistent storage, mount a data volume at:
 
 Without a volume, saved vocal profiles may be lost after a restart or redeploy.
 
-## Why The Root Dockerfile Works
+## Which Dockerfile To Use
 
-The root [Dockerfile](./Dockerfile) already does the whole job:
+For CloudBase, prefer [Dockerfile.cloudbase](./Dockerfile.cloudbase).
+
+It:
+
+- builds the Vite frontend
+- installs the base Python backend dependencies
+- copies `frontend/dist` into the runtime image
+- starts `uvicorn` on `0.0.0.0:${PORT:-8000}`
+
+The root [Dockerfile](./Dockerfile) is still kept for heavier runtimes.
+
+It does the whole job, including the optional Demucs separation stack:
 
 - builds the Vite frontend
 - installs the Python backend dependencies
+- installs the optional separation dependencies from `requirements-separation.txt`
 - copies `frontend/dist` into the runtime image
 - starts `uvicorn` on `0.0.0.0:${PORT:-8000}`
+
+## CloudBase Tradeoff
+
+`Dockerfile.cloudbase` intentionally skips the Demucs install to keep the image smaller and more likely to build on lower-tier CloudBase environments.
+
+That means:
+
+- vocal profile saving still works
+- manual semitone transposition still works
+- recording and final mix export still works
+- automatic accompaniment separation may be unavailable in that deployment
 
 ## What Not To Use
 
