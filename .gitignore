@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.local
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+backend/test-output/
+backend/.dev-backend.log
+backend/.dev-backend.err
+frontend/.dev-frontend.log
+frontend/.dev-frontend.err
+backend/data/vocal_profiles.json
+/眸间星辰 (致朱一龙).mp3

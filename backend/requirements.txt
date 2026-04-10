@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+python-multipart
+librosa
+soundfile
+# Optional automatic stem separation backends:
+# - Recommended on Python >= 3.11: `pip install -r requirements-separation.txt`
+# - Legacy Spleeter path on Python <= 3.10: `pip install -r requirements-spleeter-py310.txt`
