@@ -1,59 +1,33 @@
-# Vercel 部署指南（SingMyKey）
+# Vercel + Render 部署（推荐）
 
-这份仓库已经做了 Vercel 适配：
+## 结论
 
-- 根目录 `app.py` 作为 Python 入口（FastAPI）
-- 根目录 `requirements.txt` 供 Vercel 安装 Python 依赖
-- `vercel.json` 使用 `scripts/build-vercel.mjs` 自动构建前端到 `public/`
+该项目后端依赖（librosa/scipy/numba）体积较大，Vercel Functions 会超包大小限制。
+最稳的方案是：
 
-## 一、先把代码推到 GitHub
+- Vercel：部署前端（手机访问）
+- Render：部署后端 API
 
-在项目根目录执行：
+## 1) 部署后端到 Render
 
-```bash
-git add app.py requirements.txt .python-version vercel.json scripts/build-vercel.mjs backend/app/main.py backend/app/services/profiles.py
-git commit -m "add Vercel deployment support"
-```
+1. 打开 Render，新建 `Web Service`，选择仓库 `Nana-27-L/my-music-helper`
+2. Runtime 选 `Docker`
+3. Dockerfile Path 设为：`Dockerfile.render-free`
+4. Health Check Path：`/api/health`
+5. 部署后记下后端地址，例如：
+   `https://your-backend.onrender.com`
 
-如果你还没有 GitHub 远程仓库：
+## 2) 部署前端到 Vercel
 
-```bash
-git remote add github https://github.com/<你的用户名>/<你的仓库名>.git
-git push -u github main
-```
+1. 在 Vercel 项目里进入 `Settings -> Environment Variables`
+2. 新增变量：
+   - Name: `VITE_API_BASE_URL`
+   - Value: `https://your-backend.onrender.com`
+3. 保存后，`Redeploy`
 
-如果已经配置过 `github` 远程：
+## 3) 验证
 
-```bash
-git push github main
-```
+- 前端：`https://your-frontend.vercel.app/`
+- 后端：`https://your-backend.onrender.com/api/health`
 
-## 二、在 Vercel 创建项目
-
-1. 打开 `https://vercel.com/new`
-2. 选择你的 GitHub 仓库并 `Import`
-3. Framework Preset 选 `Other`
-4. Root Directory 保持仓库根目录（不要改成 `frontend`）
-5. 点击 `Deploy`
-
-Vercel 会自动读取仓库里的 `vercel.json`。
-
-## 三、验证上线
-
-部署完成后访问：
-
-- `https://<你的项目>.vercel.app/`
-- `https://<你的项目>.vercel.app/api/health`
-
-健康检查期望返回：
-
-```json
-{"status":"ok","service":"SingMyKey API"}
-```
-
-## 四、重要限制（Vercel 免费版）
-
-- 函数文件系统是临时的，重启后会丢失；本项目的音域档案会写入 `/tmp`，不保证长期保存。
-- 函数有执行时长和请求体大小限制，长音频/大文件处理可能失败。
-
-如果你希望“稳定保存档案 + 更大文件处理”，建议后端继续放 Render/Railway，Vercel 只放前端。
+如果两者都能打开，就可以在手机浏览器直接使用前端。
