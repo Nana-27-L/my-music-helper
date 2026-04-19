@@ -12,8 +12,15 @@ from app.api.routes.profile import router as profile_router
 
 app = FastAPI(title="SingMyKey API")
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_FRONTEND_DIST_DIR = PROJECT_ROOT / "frontend" / "dist"
+VERCEL_FRONTEND_DIST_DIR = PROJECT_ROOT / "public"
 FRONTEND_DIST_DIR = Path(
-    os.environ.get("SINGMYKEY_FRONTEND_DIST", PROJECT_ROOT / "frontend" / "dist"),
+    os.environ.get(
+        "SINGMYKEY_FRONTEND_DIST",
+        VERCEL_FRONTEND_DIST_DIR
+        if VERCEL_FRONTEND_DIST_DIR.exists()
+        else DEFAULT_FRONTEND_DIST_DIR,
+    ),
 ).resolve()
 FRONTEND_INDEX_PATH = FRONTEND_DIST_DIR / "index.html"
 

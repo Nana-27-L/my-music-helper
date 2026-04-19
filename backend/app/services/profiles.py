@@ -11,8 +11,13 @@ from typing import Any
 
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 PROFILE_STORE_LOCK = threading.Lock()
+DEFAULT_DATA_DIR = (
+    Path("/tmp/singmykey")
+    if os.environ.get("VERCEL")
+    else Path(__file__).resolve().parents[2] / "data"
+)
 DATA_DIR = Path(
-    os.environ.get("SINGMYKEY_DATA_DIR", Path(__file__).resolve().parents[2] / "data"),
+    os.environ.get("SINGMYKEY_DATA_DIR", DEFAULT_DATA_DIR),
 ).resolve()
 PROFILE_STORE_PATH = DATA_DIR / "vocal_profiles.json"
 
