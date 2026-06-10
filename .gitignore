@@ -14,3 +14,9 @@ frontend/.dev-frontend.log
 frontend/.dev-frontend.err
 backend/data/vocal_profiles.json
 /眸间星辰 (致朱一龙).mp3
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
